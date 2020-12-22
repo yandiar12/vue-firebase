@@ -1,5 +1,12 @@
-# VUEJS FIREBASE CLOUD STORE
+# VUEJS FIREBASE
 
+1. Firebase Authentication
+2. Firebase Cloud Store
+
+## Demo
+```
+https://vue-firebase-bb720.web.app/login 
+```
 ## Project setup
 ```
 npm install
@@ -9,10 +16,13 @@ npm install
 ```
 npm run serve
 ```
-
+### Compiles and minifies for development
+```
+npm run build-dev
+```
 ### Compiles and minifies for production
 ```
-npm run build
+npm run build-prod
 ```
 
 ### Lints and fixes files
