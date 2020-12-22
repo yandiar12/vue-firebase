@@ -1,17 +1,17 @@
 
-const AuthHeader = {
+const storageData = {
   getAuthData() {
-    const data = JSON.parse(localStorage.getItem('auth_data'));
+    const data = JSON.parse(localStorage.getItem('user'));
     return data;
   },
 
   saveAuthData(data) {
-    localStorage.setItem("auth_data", JSON.stringify(data))
+    localStorage.setItem("user", JSON.stringify(data))
   },
 
   removeAuthData() {
-    localStorage.removeItem("auth_data")
+    localStorage.removeItem("user")
   }
 }
 
-export { AuthHeader } 
+export { storageData } 

@@ -1,15 +1,21 @@
-import HttpService from './base.service/HttpService.js'
+import firebase from '../config/firebase'
 
-export default class AuthService extends HttpService {
-  static api = process.env.VUE_APP_ROOT_API
+const db = firebase.auth()
 
-  login(data) {
-    const end_point = this.api + '/auth/signin'
-    return this.postBodyJsonAndParam(data, end_point)
+class AuthService {
+
+  signUp(username, password) {
+    return db.createUserWithEmailAndPassword(username, password)
   }
 
-  register(data) {
-    const end_point = this.api + '/auth/signup'
-    return this.postBodyJsonAndParam(data, end_point)
+  signIn(username, password) {
+    return db.signInWithEmailAndPassword(username, password)
   }
+
+  signOut() {
+    return db.signOut()
+  }
+
 }
+
+export default new AuthService()

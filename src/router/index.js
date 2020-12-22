@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-// import { AuthHeader } from '../services/StorageService'
+import { storageData } from '../services/StorageService'
+// import store from '../store/index'
 
 const Page404 = () => import('@/views/Page404')
 
@@ -25,6 +26,16 @@ const routes = [
       },
     ]
   },
+  {
+    path: "/login",
+    name: "login",
+    component: () => import("../views/auth/Login")
+  },
+  {
+    path: "/register",
+    name: "register",
+    component: () => import("../views/auth/Register")
+  },
   { path: "*", component: Page404 }
 ]
 
@@ -33,22 +44,25 @@ const router = new VueRouter({
   routes
 })
 
-/*router.beforeEach((to, from, next) => {
-  const publicPages = ['/sign-in', '/sign-up']
+router.beforeEach((to, from, next) => {
+  const publicPages = ['/login', '/register']
   const authRequired = !publicPages.includes(to.path)
-  const token = AuthHeader.getAuthData()
-  const loggedIn = !!token
+  const userData = storageData.getAuthData()
+  const loggedIn = !!userData
 
   if (authRequired && !loggedIn) {
+    // console.log("must login!")
     return next({
-      path: '/sign-in',
+      path: '/login',
       query: { redirect: to.fullPath }
     })
   } else if (!authRequired && loggedIn) { 
+    // console.log("next home!")
     return next('/')
   } else {
+    // console.log("next!")
     return next()
   }
-})*/
+})
 
 export default router

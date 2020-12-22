@@ -5,13 +5,13 @@
         <b-card>
           <h3 class="text-center">Sign in</h3>
           <b-form>
-            <b-alert v-show="isError" show variant="danger">{{ messageError }}</b-alert>
+            <b-alert v-show="message" show variant="danger">{{ message }}</b-alert>
             <b-form-group label="Email:" label-for="email">
-              <b-form-input type="email" id="email" name="email" v-validate="'required|email'" v-model="form.email" :class="{ 'is-invalid': errors.has('email')}" ></b-form-input>
+              <b-form-input type="email" id="email" name="email" v-validate="'required|email'" v-model="form.email" :class="{ 'is-invalid': errors.has('email')}" @keyup.enter="onLogin($event)"></b-form-input>
               <b-form-invalid-feedback class="invalid-feedback" v-if="errors.has('email')">{{ errors.first('email') }}</b-form-invalid-feedback>
             </b-form-group>
             <b-form-group label="Password:" label-for="password">
-              <b-form-input type="password" id="password" name="password" v-validate="'required'" v-model="form.password" :class="{ 'is-invalid': errors.has('password')}" ></b-form-input>
+              <b-form-input type="password" id="password" name="password" v-validate="'required'" v-model="form.password" :class="{ 'is-invalid': errors.has('password')}" @keyup.enter="onLogin($event)"></b-form-input>
               <b-form-invalid-feedback class="invalid-feedback" v-if="errors.has('password')">{{ errors.first('password') }}</b-form-invalid-feedback>
             </b-form-group>
 
@@ -20,7 +20,7 @@
               Sign in
             </b-button>
             <br>
-            <router-link tag="a" :to="{ name: 'register-user' }">Register User</router-link>
+            <router-link tag="a" :to="{ name: 'register' }">Register User</router-link>
 
           </b-form>
         </b-card>  
@@ -30,56 +30,48 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-// import AuthService from '../../services/AuthService'
-// const authService = AuthService.build()
-
+import AuthService from '../../services/AuthService'
+import { storageData } from '../../services/StorageService'
 export default {
   name: 'login',
   data() {
     return {
-      isError: false,
       loading: false,
-      messageError: '',
+      message: undefined,
       form: {
         email: '',
         password: ''
       }
     }
   },
+  computed: {
+    
+  },
   methods: {
-    ...mapActions('auth', [
-      'login'
-    ]),
 
-    onLogin(e) {
+    onLogin: function(e) {
       e.preventDefault();
       
       this.loading = true
       this.$validator.validate().then(valid => {
           if (valid) {
-            const data = {
-              email: this.form.email,
-              password: this.form.password
-            }
-            this.login(data).then(
+            AuthService.signIn(this.form.email, this.form.password).then(
               (res) => {
-                if (res.data) {
-                  this.$router.replace('/')
+                if (res) {
+                  storageData.saveAuthData(res.user)
+                  this.$router.push('/')
                 } else {
                   console.log(res)
                 }
                 this.loading = false
+
+                return Promise.resolve()
               },
               error => {
                 console.log('Failed login ', error)
-                this.isError = true
-                if (!error.message.includes('undefined')) {
-                  this.messageError = error.message
-                } else {
-                  this.messageError = 'somtehing went wrong'
-                }
+                this.message = error.message
                 this.loading = false
+                return Promise.reject()
               }
             )
           } else {

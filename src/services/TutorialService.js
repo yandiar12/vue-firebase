@@ -1,6 +1,6 @@
 import firebase from '../config/firebase'
 
-const db = firebase.collection('/tutorials')
+const db = firebase.firestore().collection('/tutorials')
 
 class TutorialService {
   getAll() {
@@ -9,7 +9,6 @@ class TutorialService {
 
   create(tutorial) {
     return db.add(tutorial)
-    // return db.doc('tutorial').set(tutorial)
   }
 
   update(id, value) {
