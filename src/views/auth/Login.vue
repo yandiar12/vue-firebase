@@ -15,9 +15,19 @@
               <b-form-invalid-feedback class="invalid-feedback" v-if="errors.has('password')">{{ errors.first('password') }}</b-form-invalid-feedback>
             </b-form-group>
 
-            <b-button block variant="primary" @click="onLogin($event)" :disabled="loading">
+            <b-button block variant="outline-primary" @click="onLogin($event)" :disabled="loading">
               <b-spinner small v-show="loading"></b-spinner>
               Sign in
+            </b-button>
+            <hr>
+            <b-button block variant="danger" @click="loginWithGoogle($event)" :disabled="loading">
+              <i class="fa fa-google fa-fw"></i>
+              Sign in With Google
+            </b-button>
+            <br>
+            <b-button block variant="primary" @click="loginWithFacebook($event)" :disabled="loading">
+              <i class="fa fa-facebook fa-fw"></i>
+              Sign in With Facebook
             </b-button>
             <br>
             <router-link tag="a" :to="{ name: 'register' }">Register User</router-link>
@@ -77,7 +87,49 @@ export default {
           } else {
             this.loading = false
           }
-      });
+      })
+    },
+    loginWithGoogle: function(e) {
+      e.preventDefault()
+
+      AuthService.signInWithGoogle().then(
+        (res) => {
+          if (res) {
+            storageData.saveAuthData(res.user)
+            this.$router.push('/')
+          } else {
+            console.log(res)
+          }
+
+          return Promise.resolve()
+        },
+        error => {
+          console.log('Failed login ', error)
+          this.message = error.message
+          return Promise.reject()
+        }
+      )
+    },
+    loginWithFacebook: function(e) {
+      e.preventDefault()
+
+      AuthService.signInWithFacebook().then(
+        (res) => {
+          if (res) {
+            storageData.saveAuthData(res.user)
+            this.$router.push('/')
+          } else {
+            console.log(res)
+          }
+
+          return Promise.resolve()
+        },
+        error => {
+          console.log('Failed login ', error)
+          this.message = error.message
+          return Promise.reject()
+        }
+      )
     }
   },
 }

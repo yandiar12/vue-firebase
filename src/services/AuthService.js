@@ -12,6 +12,16 @@ class AuthService {
     return db.signInWithEmailAndPassword(username, password)
   }
 
+  signInWithGoogle() {
+    const provider = new firebase.auth.GoogleAuthProvider()
+    return db.signInWithPopup(provider)
+  }
+
+  signInWithFacebook() {
+    const provider = new firebase.auth.FacebookAuthProvider()
+    return db.signInWithPopup(provider)
+  }
+
   signOut() {
     return db.signOut()
   }
